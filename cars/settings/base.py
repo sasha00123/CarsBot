@@ -114,7 +114,8 @@ DJANGO_TELEGRAMBOT = {
 }
 
 # Bot/email message
-MESSAGE_TEMPLATE = Path(os.path.join(BASE_DIR, 'message.txt')).read_text()
+MESSAGE_TEMPLATE_EMAIL = Path(os.path.join(BASE_DIR, 'message_email.txt')).read_text()
+MESSAGE_TEMPLATE_BOT = Path(os.path.join(BASE_DIR, 'message_bot.txt')).read_text()
 
 MAIL_SUBJECT = config('MAIL_SUBJECT', default='Данные об автомобиле.')
 EMAIL = config('EMAIL', default='root@localhost')

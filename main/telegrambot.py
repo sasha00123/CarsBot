@@ -30,7 +30,7 @@ def send_info(update: Update, context: CallbackContext, car: Car):
         update.message.reply_media_group([InputMediaPhoto(image.file.url) for image in car.images.all()])
 
     keyboard = InlineKeyboardMarkup([[InlineKeyboardButton("Отправить на почту", callback_data=car.id)],])
-    update.message.reply_text(settings.MESSAGE_TEMPLATE.format(car.brand, car.model, car.year, car.number, car.vin, car.address, car.comments), parse_mode=telegram.ParseMode.HTML, reply_markup = keyboard)
+    update.message.reply_text(settings.MESSAGE_TEMPLATE_EMAIL.format(car.brand, car.model, car.year, car.number, car.vin, car.address, car.comments), parse_mode=telegram.ParseMode.HTML, reply_markup = keyboard)
     update.message.reply_location(*list(car.geo)[::-1])
 
 
@@ -79,7 +79,7 @@ def send_email(update: Update, context: CallbackContext):
         return
 
     send_mail(settings.MAIL_SUBJECT,
-              settings.MESSAGE_TEMPLATE.format(car.brand, car.model, car.year,
+              settings.MESSAGE_TEMPLATE_BOT.format(car.brand, car.model, car.year,
                                                car.number, car.vin, car.address, car.comments),
               settings.EMAIL,
               [user.email])
