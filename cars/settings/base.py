@@ -116,5 +116,5 @@ DJANGO_TELEGRAMBOT = {
 # Bot/email message
 MESSAGE_TEMPLATE = Path(os.path.join(BASE_DIR, 'message.txt')).read_text()
 
-MAIL_SUBJECT = config('MAIL_SUBJECT')
-EMAIL = config('EMAIL')
+MAIL_SUBJECT = config('MAIL_SUBJECT', default='Данные об автомобиле.')
+EMAIL = config('EMAIL', default='root@localhost')
