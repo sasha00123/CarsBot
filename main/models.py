@@ -16,6 +16,7 @@ class Car(models.Model):
     brand = models.CharField(max_length=255, verbose_name='Марка')
     model = models.CharField(max_length=255, verbose_name='Модель')
     year = models.IntegerField(verbose_name='Год')
+    mileage = models.IntegerField(verbose_name='Пробег')
 
     # Address + Geoposition
     address = models.CharField(max_length=512, verbose_name='Адрес')

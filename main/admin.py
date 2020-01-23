@@ -15,7 +15,7 @@ class CarAdmin(admin.ModelAdmin):
     inlines = [
         ImageInline,
     ]
-    list_display = ['brand', 'model', 'number', 'year', 'vin', 'address', 'status', 'comments', 'created_date', 'updated_date']
+    list_display = ['brand', 'model', 'number', 'year', 'mileage', 'vin', 'address', 'status', 'comments', 'created_date', 'updated_date']
     search_fields = ['brand', 'model', 'address', 'year']
 
     formfield_overrides = {
