@@ -6,7 +6,7 @@ DATABASES = {
     'default': dj_database_url.config()
 }
 
-MIDDLEWARE += ['whitenoise.middleware.WhiteNoiseMiddleware',]
+MIDDLEWARE = ['whitenoise.middleware.WhiteNoiseMiddleware',] + MIDDLEWARE
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
