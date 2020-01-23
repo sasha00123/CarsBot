@@ -6,8 +6,8 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.db.models import Q
 from django_telegrambot.apps import DjangoTelegramBot
-from telegram import Update, InputMediaPhoto, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import CommandHandler, CallbackContext, CallbackQueryHandler
+from telegram import Update, InputMediaPhoto, InlineKeyboardButton, InlineKeyboardMarkup, Message
+from telegram.ext import CommandHandler, CallbackContext, CallbackQueryHandler, MessageHandler, Filters
 
 from main.models import Car, Search, TelegramUser
 
@@ -18,9 +18,9 @@ def start(update: Update, context: CallbackContext):
     TelegramUser.objects.update_or_create(chat_id=update.effective_chat.id,
                                           defaults= {
                                               'full_name':update.effective_user.full_name,
-                                              'username':update.effective_user.username
+                                              'username':update.effective_user.username if update.effective_user.username is not None else ""
                                           })
-    update.message.reply_text("Добро пожаловать!")
+    update.message.reply_text(settings.MESSAGE_START)
 
 
 def send_info(update: Update, context: CallbackContext, car: Car):
@@ -30,16 +30,14 @@ def send_info(update: Update, context: CallbackContext, car: Car):
         update.message.reply_media_group([InputMediaPhoto(image.file.url) for image in car.images.all()])
 
     keyboard = InlineKeyboardMarkup([[InlineKeyboardButton("Отправить на почту", callback_data=car.id)],])
-    update.message.reply_text(settings.MESSAGE_TEMPLATE_EMAIL.format(car.brand, car.model, car.year, car.number, car.vin, car.address, car.comments), parse_mode=telegram.ParseMode.HTML, reply_markup = keyboard)
+    update.message.reply_text(settings.MESSAGE_TEMPLATE_BOT.format(car.brand, car.model, car.year, car.mileage,
+                                                                     car.number, car.vin, car.address, car.comments),
+                              parse_mode=telegram.ParseMode.HTML, reply_markup = keyboard)
     update.message.reply_location(*list(car.geo)[::-1])
 
 
 def search(update: Update, context: CallbackContext):
-    if len(context.args) != 1:
-        update.message.reply_text("Неверное число аргументов! Синтаксис: /search <ID>")
-        return
-
-    pk = context.args[0]
+    pk = update.message.text
 
     user = TelegramUser.objects.get(chat_id=update.effective_chat.id)
     search_log = Search.objects.create(user=user, search_value=pk, is_success=False)
@@ -78,16 +76,20 @@ def send_email(update: Update, context: CallbackContext):
                                   "Это можно сделать при помощи команды /email <EMAIL>.")
         return
 
-    send_mail(settings.MAIL_SUBJECT,
-              settings.MESSAGE_TEMPLATE_BOT.format(car.brand, car.model, car.year,
-                                               car.number, car.vin, car.address, car.comments),
-              settings.EMAIL,
-              [user.email])
+    images_html = '\n'.join([f'<tr><img src="{settings.WEBSITE_LINK + image.file.url}"></tr>' for image in car.images.all()])
+
+    send_mail(settings.MAIL_SUBJECT.format(car.number),
+              f"Номер: {car.number}",
+              settings.EMAIL_HOST_USER,
+              [user.email], html_message=settings.MESSAGE_TEMPLATE_EMAIL.format(images_html))
 
     text = update.callback_query.message.text
     update.callback_query.message.edit_text(text + '\n\n Отправлено на почту!')
     update.callback_query.answer()
 
+
+def get_help(update: Update, context: CallbackContext):
+    update.message.reply_text(settings.MESSAGE_HELP)
 
 def main():
     logger.info("Loading handlers for telegram bot")
@@ -95,8 +97,10 @@ def main():
     dp = DjangoTelegramBot.dispatcher
 
     dp.add_handler(CommandHandler("start", start))
-    dp.add_handler(CommandHandler("search", search))
+    dp.add_handler(CommandHandler("help", get_help))
     dp.add_handler(CommandHandler("email", set_email))
+
+    dp.add_handler(MessageHandler(Filters.text, search))
 
     dp.add_handler(CallbackQueryHandler(send_email))
 

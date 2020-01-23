@@ -114,8 +114,18 @@ DJANGO_TELEGRAMBOT = {
 }
 
 # Bot/email message
-MESSAGE_TEMPLATE_EMAIL = Path(os.path.join(BASE_DIR, 'message_email.txt')).read_text()
-MESSAGE_TEMPLATE_BOT = Path(os.path.join(BASE_DIR, 'message_bot.txt')).read_text()
+MESSAGE_TEMPLATE_EMAIL = Path(os.path.join(BASE_DIR, 'messages/message_email.html')).read_text()
+MESSAGE_TEMPLATE_BOT = Path(os.path.join(BASE_DIR, 'messages/message_bot.txt')).read_text()
 
-MAIL_SUBJECT = config('MAIL_SUBJECT', default='Данные об автомобиле.')
-EMAIL = config('EMAIL', default='root@localhost')
+MESSAGE_HELP = Path(os.path.join(BASE_DIR, 'messages/message_help.txt')).read_text()
+MESSAGE_START = Path(os.path.join(BASE_DIR, 'messages/message_start.txt')).read_text()
+
+MAIL_SUBJECT = Path(os.path.join(BASE_DIR, 'messages/message_subject.txt')).read_text()
+
+WEBSITE_LINK = config('WEBSITE_LINK', default='http://localhost:8000')
+
+EMAIL_HOST = config('EMAIL_HOST', default='')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
+EMAIL_PORT = config('EMAIL_PORT', default=465)
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)

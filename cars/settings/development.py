@@ -12,5 +12,5 @@ DATABASES = {
 }
 
 # MAIL
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 SEND_TYPE = 'FILE'
