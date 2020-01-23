@@ -8,4 +8,5 @@ DATABASES = {
 
 MIDDLEWARE = ['whitenoise.middleware.WhiteNoiseMiddleware',] + MIDDLEWARE
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+SEND_TYPE = "FILE"
 

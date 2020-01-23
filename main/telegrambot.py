@@ -24,7 +24,7 @@ def start(update: Update, context: CallbackContext):
 
 
 def send_info(update: Update, context: CallbackContext, car: Car):
-    if settings.DEBUG:
+    if settings.SEND_TYPE == "FILE":
         update.message.reply_media_group([InputMediaPhoto(open(image.file.path, 'rb')) for image in car.images.all()])
     else:
         update.message.reply_media_group([InputMediaPhoto(image.file.url) for image in car.images.all()])
