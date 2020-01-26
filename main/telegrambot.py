@@ -72,7 +72,7 @@ def send_email(update: Update, context: CallbackContext):
     car = Car.objects.get(pk=update.callback_query.data)
 
     if not user.email:
-        update.message.reply_text("Чтобы отправить сообщение на почту, нужно сначала указать email.\n" +
+        update.effective_message.reply_text("Чтобы отправить сообщение на почту, нужно сначала указать email.\n" +
                                   "Это можно сделать при помощи команды /email <EMAIL>.")
         return
 
