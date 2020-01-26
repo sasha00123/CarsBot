@@ -91,6 +91,11 @@ def send_email(update: Update, context: CallbackContext):
 def get_help(update: Update, context: CallbackContext):
     update.message.reply_text(settings.MESSAGE_HELP)
 
+
+def error(update, context, error):
+    logger.warn('Update "%s" caused error "%s"' % (update, error))
+
+
 def main():
     logger.info("Loading handlers for telegram bot")
 
@@ -103,4 +108,6 @@ def main():
     dp.add_handler(MessageHandler(Filters.text, search))
 
     dp.add_handler(CallbackQueryHandler(send_email))
+
+    dp.add_error_handler(error)
 
