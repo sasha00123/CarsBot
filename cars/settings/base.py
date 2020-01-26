@@ -2,6 +2,8 @@
 import os
 from decouple import config, Csv
 from pathlib import Path
+from dj_database_url import parse as db_url
+
 
 import dj_database_url
 
@@ -102,16 +104,39 @@ MAP_WIDGETS = {
     "LANGUAGE": "ru"
 }
 
-# Telegram
-DJANGO_TELEGRAMBOT = {
-    'MODE': 'POLLING',
-    'BOTS': [
-        {
-            'TOKEN': config('TELEGRAM_BOT_TOKEN'),
-        },
-    ],
 
-}
+# Website base url
+WEBSITE_LINK = config('WEBSITE_LINK', default='http://localhost:8000')
+
+
+# Telegram
+USE_WEBHOOK = config('USE_WEBHOOK', cast=bool)
+
+if USE_WEBHOOK:
+    DJANGO_TELEGRAMBOT = {
+        'MODE': 'WEBHOOK',
+        'WEBHOOK_SITE' : WEBSITE_LINK,
+        'BOTS': [
+            {
+                'TOKEN': config('TELEGRAM_BOT_TOKEN'),
+            },
+        ],
+
+    }
+else:
+    DJANGO_TELEGRAMBOT = {
+        'MODE': 'POLLING',
+        'BOTS': [
+            {
+                'TOKEN': config('TELEGRAM_BOT_TOKEN'),
+            },
+        ],
+
+    }
+
+
+# Send images by link or by file
+SEND_TYPE = config('SEND_TYPE', default='FILE')
 
 # Bot/email message
 MESSAGE_TEMPLATE_EMAIL = Path(os.path.join(BASE_DIR, 'messages/message_email.html')).read_text()
@@ -122,10 +147,21 @@ MESSAGE_START = Path(os.path.join(BASE_DIR, 'messages/message_start.txt')).read_
 
 MAIL_SUBJECT = Path(os.path.join(BASE_DIR, 'messages/message_subject.txt')).read_text()
 
-WEBSITE_LINK = config('WEBSITE_LINK', default='http://localhost:8000')
+
+# Email config
 
 EMAIL_HOST = config('EMAIL_HOST', default='')
 EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
 EMAIL_PORT = config('EMAIL_PORT', default=465)
 EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
+
+
+# DATABASE
+DATABASES = {
+    'default': config(
+        'DATABASE_URL',
+        default='spatialite:///' + os.path.join(BASE_DIR, 'db.sqlite3'),
+        cast=db_url
+    )
+}
