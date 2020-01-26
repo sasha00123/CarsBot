@@ -4,7 +4,7 @@ cffi==1.13.2
 cryptography==2.8
 Django==3.0.2
 git+https://github.com/a-ershov/django-map-widgets
-git+https://github.com/flaviopifiator/django-telegrambot
+git+https://github.com/sasha00123/django-telegrambot
 future==0.18.2
 Pillow==7.0.0
 pycparser==2.19
