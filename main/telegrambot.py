@@ -42,7 +42,7 @@ def search(update: Update, context: CallbackContext):
     user = TelegramUser.objects.get(chat_id=update.effective_chat.id)
     search_log = Search.objects.create(user=user, search_value=pk, is_success=False)
 
-    cars = Car.objects.filter(Q(vin=pk) | Q(number__icontains=pk))
+    cars = Car.objects.filter(Q(vin=pk) | Q(number__icontains=pk.lower()) | Q(number__icontains=pk.upper()))
 
     if cars.count():
         update.message.reply_text(f"По вашему запросу найдено вхождений: {cars.count()}")
