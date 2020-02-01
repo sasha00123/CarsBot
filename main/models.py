@@ -20,7 +20,6 @@ class Car(models.Model):
 
     # Address + Geoposition
     address = models.CharField(max_length=512, verbose_name='Адрес')
-    geo = models.PointField()
 
     # Extra fields
     status = models.TextField(choices=Status.choices, default=Status.ACTIVE, verbose_name='Статус')

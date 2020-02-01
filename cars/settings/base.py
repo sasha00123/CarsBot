@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'main',
     'django_telegrambot',
     'mapwidgets',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
@@ -37,6 +38,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'cars.urls'
@@ -100,13 +102,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-
-MAP_WIDGETS = {
-    "GOOGLE_MAP_API_KEY": config('GOOGLE_MAP_API_KEY'),
-    "LANGUAGE": "ru"
-}
-
-
 # Website base url
 WEBSITE_LINK = config('WEBSITE_LINK', default='http://localhost:8000')
 
@@ -167,3 +162,7 @@ DATABASES = {
         cast=db_url
     )
 }
+
+INTERNAL_IPS = [
+    '127.0.0.1',
+]

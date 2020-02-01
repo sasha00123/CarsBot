@@ -29,11 +29,12 @@ def send_info(update: Update, context: CallbackContext, car: Car):
     else:
         update.message.reply_media_group([InputMediaPhoto(settings.WEBSITE_LINK + image.file.url) for image in car.images.all()])
 
-    keyboard = InlineKeyboardMarkup([[InlineKeyboardButton("Отправить на почту", callback_data=car.id)],])
+    keyboard = InlineKeyboardMarkup([
+        [InlineKeyboardButton("Отправить на почту", callback_data=car.id)],
+        [InlineKeyboardButton("Открыть карту", url=f"https://yandex.ru/maps?mode=search&text={car.address}")]])
     update.message.reply_text(settings.MESSAGE_TEMPLATE_BOT.format(car.brand, car.model, car.year, car.mileage,
                                                                      car.number, car.vin, car.address, car.comments),
                               parse_mode=telegram.ParseMode.HTML, reply_markup = keyboard)
-    update.message.reply_location(*list(car.geo)[::-1])
 
 
 def search(update: Update, context: CallbackContext):
