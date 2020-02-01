@@ -19,6 +19,13 @@ class CarAdmin(admin.ModelAdmin):
     search_fields = ['brand', 'model', 'address', 'year']
 
 
+    def save_model(self, request, obj, form, change):
+        obj.save()
+
+        for afile in request.FILES.getlist('photos_multiple'):
+            obj.images.create(file=afile)
+
+
 @admin.register(Search)
 class SearchAdmin(admin.ModelAdmin):
     list_display = ['user', 'search_value', 'is_success', 'created_date']
