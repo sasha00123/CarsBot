@@ -8,6 +8,7 @@ class ImageInline(admin.TabularInline):
     model = Image
     verbose_name = 'Изображения'
     verbose_name_plural = 'Изображения'
+    extra = 0
 
 
 @admin.register(Car)
