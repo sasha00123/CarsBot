@@ -46,19 +46,19 @@ def search(update: Update, context: CallbackContext):
     cars = Car.objects.filter(Q(vin=pk) | Q(number__icontains=pk.lower()) | Q(number__icontains=pk.upper()))
 
     if cars.count():
-        update.message.reply_text(f"По вашему запросу найдено вхождений: {cars.count()}")
+        update.message.reply_text(f"По вашему запросу найдено записей: {cars.count()}")
         for car in cars.all():
             search_log.matches.add(car)
             send_info(update, context, car)
         search_log.is_success = True
         search_log.save()
     else:
-        update.message.reply_text("Машин с таким номером или VIN не найдено!")
+        update.message.reply_text("Машин с таким номером или VIN не найдено! Обратите внимание, что VIN должен быть указан полностью, а номер можно указать частично.")
 
 
 def set_email(update: Update, context: CallbackContext):
     if len(context.args) != 1:
-        update.message.reply_text("Неверное число аргументов! Синтаксис: /email <EMAIL>")
+        update.message.reply_text("Неверное число аргументов! Синтаксис: /email <EMAIL>. Пример /email me@ya.ru")
         return
 
     user = TelegramUser.objects.get(chat_id=update.effective_chat.id)
