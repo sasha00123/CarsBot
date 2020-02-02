@@ -40,25 +40,30 @@ def send_info(update: Update, context: CallbackContext, car: Car):
 def search(update: Update, context: CallbackContext):
     pk = update.message.text
 
+    if len(pk)<5:
+        update.message.reply_text("Длина запроса должна быть больше 5 символов. Повторите, пожалуйста, запрос.")
+        return
+
     user = TelegramUser.objects.get(chat_id=update.effective_chat.id)
     search_log = Search.objects.create(user=user, search_value=pk, is_success=False)
 
-    cars = Car.objects.filter(Q(vin=pk) | Q(number__icontains=pk.lower()) | Q(number__icontains=pk.upper()))
+#    cars = Car.objects.filter(Q(vin=pk) | Q(number__icontains=pk.lower()) | Q(number__icontains=pk.upper()))
+    cars = Car.objects.filter(Q(vin__icontains=pk.lower()) | Q(vin__icontains=pk.upper()) | Q(number=pk.lower()) | Q(number=pk.upper()))
 
     if cars.count():
-        update.message.reply_text(f"По вашему запросу найдено вхождений: {cars.count()}")
+        update.message.reply_text(f"По вашему запросу найдено записей: {cars.count()}")
         for car in cars.all():
             search_log.matches.add(car)
             send_info(update, context, car)
         search_log.is_success = True
         search_log.save()
     else:
-        update.message.reply_text("Машин с таким номером или VIN не найдено!")
+        update.message.reply_text("Машин с таким номером или VIN не найдено! Обратите внимание, что номер авто должен быть указан полностью, а VIN можно указать частично, но не меньше 5 символов.")
 
 
 def set_email(update: Update, context: CallbackContext):
     if len(context.args) != 1:
-        update.message.reply_text("Неверное число аргументов! Синтаксис: /email <EMAIL>")
+        update.message.reply_text("Неверное число аргументов! Синтаксис: /email <EMAIL>. Пример /email me@ya.ru")
         return
 
     user = TelegramUser.objects.get(chat_id=update.effective_chat.id)
