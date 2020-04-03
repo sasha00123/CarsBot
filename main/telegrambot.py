@@ -23,11 +23,19 @@ def start(update: Update, context: CallbackContext):
     update.message.reply_text(settings.MESSAGE_START)
 
 
+def chunks(lst, n):
+    """Yield successive n-sized chunks from lst."""
+    for i in range(0, len(lst), n):
+        yield lst[i:i + n]
+
+
 def send_info(update: Update, context: CallbackContext, car: Car):
     if settings.SEND_TYPE == "FILE":
-        update.message.reply_media_group([InputMediaPhoto(open(image.file.path, 'rb')) for image in car.images.all()])
+        for chunk in chunks(car.images.all(), 10):
+            update.message.reply_media_group([InputMediaPhoto(open(image.file.path, 'rb')) for image in chunk])
     else:
-        update.message.reply_media_group([InputMediaPhoto(settings.WEBSITE_LINK + image.file.url) for image in car.images.all()])
+        for chunk in chunks(car.images.all(), 10):
+            update.message.reply_media_group([InputMediaPhoto(settings.WEBSITE_LINK + image.file.url) for image in chunk])
 
     keyboard = InlineKeyboardMarkup([
         [InlineKeyboardButton("Отправить на почту", callback_data=car.id)],
