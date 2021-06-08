@@ -6,7 +6,7 @@ Django==3.0.3
 git+https://github.com/a-ershov/django-map-widgets
 git+https://github.com/sasha00123/django-telegrambot
 future==0.18.2
-Pillow==7.0.0
+Pillow==8.2.0
 pycparser==2.19
 python-telegram-bot==12.3.0
 pytz==2019.3
